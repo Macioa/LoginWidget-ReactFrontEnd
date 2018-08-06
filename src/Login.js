@@ -3,6 +3,8 @@ import logo from './logo.svg';
 import './App.css';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import Button from '@material-ui/core/Button';
+import { parse } from 'path';
+require('./env/index')
 
 class Login extends Component {
   state={expanded:false, username:null, password:null}
@@ -13,12 +15,30 @@ class Login extends Component {
     if (e.target.name==='username') 
        var validated = e.target.value.replace(/[^a-z0-9]/gi,''); 
     else { var validated = e.target.value; }
-    console.log(validated)
     this.setState({[e.target.name]:validated})
   }
 
-  handleSubmit=(e)=>{
-    console.log('submit')
+  register=async(e)=>{
+    e.preventDefault();
+    const response = await fetch(`http://localhost:9000/register`, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify(this.state),
+        headers: { 'content-type':'application/json' }
+    })
+    const parsedresponse = await response.json();
+    console.log(parsedresponse)
+  }
+
+  login=async(e)=>{
+    const response = await fetch(`http://localhost:9000/login`, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify(this.state),
+        headers: { 'content-type':'application/json' }
+    }).catch((err)=>{console.error('err')})
+    const parsedresponse = await response.json();
+    console.log(parsedresponse)
   }
 
   render() {
@@ -29,7 +49,8 @@ class Login extends Component {
             <form style={{margin:'5px'}} onSubmit={this.handleSubmit}>
               <input type="text" name="username" placeholder="Username" onChange={this.onFormChange} value={this.state.username}/><br/>
               <input type="password" name="password" placeholder="Password" onChange={this.onFormChange} value={this.state.password}/><br/>
-              <input type="submit" value="Submit"/>
+              <button onClick={this.register} type="button">Register</button>
+              <button onClick={this.login} type="button">Login</button>
             </form>
         </ExpansionPanel>
       </div>
