@@ -20,38 +20,25 @@ class Login extends Component {
     this.setState({[e.target.name]:validated});
   }
 
-  register=async(e)=>{
-    e.preventDefault();
+  post=async(path)=>{
     const response = await fetch(`${this.state.loginserver}/register`, {
-        method: 'POST',
-        credentials: 'include',
-        body: JSON.stringify(this.state),
-        headers: { 'content-type':'application/json' }
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify(this.state),
+      headers: { 'content-type':'application/json' }
     })
 
     try {
       const parsedresponse = await response.json();
 
-      if (parsedresponse.status==201)
+      if (parsedresponse.status==201||201)
         this.setState({expanded:false})
     } catch(err){ alert(`Could not connect to ${this.state.loginserver}\n${err}`) }
   }
 
-  login=async(e)=>{
-    const response = await fetch(`${this.state.loginserver}/login`, {
-        method: 'POST',
-        credentials: 'include',
-        body: JSON.stringify(this.state),
-        headers: { 'content-type':'application/json' }
-    }).catch((err)=>{console.error('err')})
+  register=(e)=>{ this.post('/register'); }
 
-    try {
-      const parsedresponse = await response.json();
-
-      if (parsedresponse.status==200)
-        this.setState({expanded:false})
-    } catch(err){ alert(`Could not connect to ${this.state.loginserver}\n${err}`) }
-  }
+  login=(e)=>{ this.post('/login') }
 
   readCookie=()=>{
     let newState={};
@@ -69,8 +56,7 @@ class Login extends Component {
     if (!newState) newState={};
     Object.assign(newState, this.readCookie());
     super.setState(newState,()=>{
-      if (this.lift)
-        this.lift(this.state)
+    if (this.lift){ this.lift(this.state) }
     });
   }
 
@@ -82,10 +68,14 @@ class Login extends Component {
         <Button onClick={this.toggleExpanded} style={{borderRadius:"15px"}}>{this.state.user?this.state.user:'Login'}</Button>
         <ExpansionPanel expanded={this.state.expanded} style={{width:"125px", margin:"10px auto 10px", textAlign:'center', borderRadius:'10px'}}>
             <form style={{margin:'5px'}} onSubmit={this.handleSubmit}>
-              <input type="text" name="username" placeholder="Username" onChange={this.onFormChange} value={this.state.username}/><br/>
-              <input type="password" name="password" placeholder="Password" onChange={this.onFormChange} value={this.state.password}/><br/>
+              <input type="text" name="username" placeholder="Username" onChange={this.onFormChange} value={this.state.username}/>
+              <br/>
+              <input type="password" name="password" placeholder="Password" onChange={this.onFormChange} value={this.state.password}/>
+              <br/>
               <button onClick={this.register} type="button">Register</button>
               <button onClick={this.login} type="button">Login</button>
+              <br/>
+              <button>Guest</button>
             </form>
         </ExpansionPanel>
       </div>
