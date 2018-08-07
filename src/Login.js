@@ -1,52 +1,56 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import Button from '@material-ui/core/Button';
-import { parse } from 'path';
 require('./env/index')
 
 class Login extends Component {
-  state={expanded:false, username:null, user: null, password:null, city:null, zip:null}
+  constructor(props){
+    super(props);
+    this.state = { expanded:false, 
+                   username:null, user: null, password:null, city:null, zip:null, 
+                   loginserver: props.server||process.env.LOGINSERVER||'http://localhost:9000'
+                 };
+  }
 
   toggleExpanded=(e)=>{this.setState({expanded:!this.state.expanded})}
   
   onFormChange=(e)=>{
-    if (e.target.name==='username') 
-       var validated = e.target.value.replace(/[^a-z0-9]/gi,''); 
+    if (e.target.name==='username') { var validated = e.target.value.replace(/[^a-z0-9]/gi,''); }
     else { var validated = e.target.value; }
-    this.setState({[e.target.name]:validated})
+    this.setState({[e.target.name]:validated});
   }
 
   register=async(e)=>{
     e.preventDefault();
-    const response = await fetch(`http://localhost:9000/register`, {
+    const response = await fetch(`${this.state.loginserver}/register`, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify(this.state),
         headers: { 'content-type':'application/json' }
     })
 
-    const parsedresponse = await response.json();
-    console.log(parsedresponse)
+    try {
+      const parsedresponse = await response.json();
 
-    if (parsedresponse.status==201)
-      this.setState({expanded:false})
+      if (parsedresponse.status==201)
+        this.setState({expanded:false})
+    } catch(err){ alert(`Could not connect to ${this.state.loginserver}\n${err}`) }
   }
 
   login=async(e)=>{
-    const response = await fetch(`http://localhost:9000/login`, {
+    const response = await fetch(`${this.state.loginserver}/login`, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify(this.state),
         headers: { 'content-type':'application/json' }
     }).catch((err)=>{console.error('err')})
 
-    const parsedresponse = await response.json();
-    console.log(parsedresponse)
+    try {
+      const parsedresponse = await response.json();
 
-    if (parsedresponse.status==201)
-      this.setState({expanded:false})
+      if (parsedresponse.status==200)
+        this.setState({expanded:false})
+    } catch(err){ alert(`Could not connect to ${this.state.loginserver}\n${err}`) }
   }
 
   readCookie=()=>{
@@ -55,8 +59,8 @@ class Login extends Component {
       let data=cookie.split('=');
       newState[data[0]]=data[1]
     }
-    if (newState.username)
-      if (newState.username.length)
+    if (newState.user)
+      if (newState.user.length)
         return newState;
     else return {}
   }
