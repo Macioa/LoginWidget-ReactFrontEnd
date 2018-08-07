@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import Button from '@material-ui/core/Button';
-require('./env/index')
+
 
 class Login extends Component {
   constructor(props){
