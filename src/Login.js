@@ -21,7 +21,7 @@ class Login extends Component {
   }
 
   post=async(path)=>{
-    const response = await fetch(`${this.state.loginserver}/register`, {
+    const response = await fetch(`${this.state.loginserver}${path}`, {
       method: 'POST',
       credentials: 'include',
       body: JSON.stringify(this.state),
@@ -30,15 +30,18 @@ class Login extends Component {
 
     try {
       const parsedresponse = await response.json();
-
-      if (parsedresponse.status==201||201)
-        this.setState({expanded:false})
+      console.log(parsedresponse)
+      if ((parsedresponse.status==200)||(parsedresponse.status==201))
+        this.setState({expanded:false, user: parsedresponse.user.username, city: parsedresponse.user.city, zip: parsedresponse.user.zip})
     } catch(err){ alert(`Could not connect to ${this.state.loginserver}\n${err}`) }
+
   }
 
-  register=(e)=>{ this.post('/register'); }
+  register=(e)=>{ if (this.state.username) this.post('/register'); }
 
-  login=(e)=>{ this.post('/login') }
+  login=(e)=>{ if (this.state.username) this.post('/login'); }
+
+  guest=(e)=>{ this.post('/guest'); }
 
   readCookie=()=>{
     let newState={};
@@ -75,7 +78,7 @@ class Login extends Component {
               <button onClick={this.register} type="button">Register</button>
               <button onClick={this.login} type="button">Login</button>
               <br/>
-              <button>Guest</button>
+              <button onClick={this.guest} type="button">Guest</button>
             </form>
         </ExpansionPanel>
       </div>
