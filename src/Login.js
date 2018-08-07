@@ -56,7 +56,8 @@ class Login extends Component {
       newState[data[0]]=data[1]
     }
     if (newState.username)
-      return newState;
+      if (newState.username.length)
+        return newState;
     else return {}
   }
 
