@@ -10,6 +10,7 @@ class Login extends Component {
                    username:null, user: null, password:null, city:null, zip:null, 
                    loginserver: props.server||process.env.LOGINSERVER||'http://localhost:9000'
                  };
+    this.formRef = React.createRef()
   }
 
   toggleExpanded=(e)=>{this.setState({expanded:!this.state.expanded})}
@@ -24,17 +25,19 @@ class Login extends Component {
     const response = await fetch(`${this.state.loginserver}${path}`, {
       method: 'POST',
       credentials: 'include',
-      body: JSON.stringify(this.state),
+      body: JSON.stringify({username:this.formRef.current.username.value, password:this.formRef.current.password.value}),
       headers: { 'content-type':'application/json' }
     })
 
     try {
       const parsedresponse = await response.json();
-      console.log(parsedresponse)
-      if ((parsedresponse.status==200)||(parsedresponse.status==201))
-        this.setState({expanded:false, user: parsedresponse.user.username, city: parsedresponse.user.city, zip: parsedresponse.user.zip})
-    } catch(err){ alert(`Could not connect to ${this.state.loginserver}\n${err}`) }
 
+      if ((parsedresponse.status==200)||(parsedresponse.status==201))
+        if (parsedresponse.user){
+          let user = parsedresponse.user; user.user = user.username;
+          this.setState(user)
+        }
+    } catch(err){ alert(`Could not connect to ${this.state.loginserver}\n${err}`) }
   }
 
   register=(e)=>{ if (this.state.username) this.post('/register'); }
@@ -57,20 +60,19 @@ class Login extends Component {
 
   setState=(newState)=>{
     if (!newState) newState={};
-    Object.assign(newState, this.readCookie());
-    super.setState(newState,()=>{
+     super.setState(newState,()=>{
     if (this.lift){ this.lift(this.state) }
     });
   }
 
-  componentDidMount=()=>{this.setState()}
+  componentDidMount=()=>{this.setState(this.readCookie())}
 
   render() {
     return (
       <div className="Login" style={{borderStyle:'solid', borderRadius:'15px', borderWidth:"1px", width:150, textAlign:'center'}}>
         <Button onClick={this.toggleExpanded} style={{borderRadius:"15px"}}>{this.state.user?this.state.user:'Login'}</Button>
         <ExpansionPanel expanded={this.state.expanded} style={{width:"125px", margin:"10px auto 10px", textAlign:'center', borderRadius:'10px'}}>
-            <form style={{margin:'5px'}} onSubmit={this.handleSubmit}>
+            <form style={{margin:'5px'}} onSubmit={this.handleSubmit} ref={this.formRef} name="form">
               <input type="text" name="username" placeholder="Username" onChange={this.onFormChange} value={this.state.username}/>
               <br/>
               <input type="password" name="password" placeholder="Password" onChange={this.onFormChange} value={this.state.password}/>
