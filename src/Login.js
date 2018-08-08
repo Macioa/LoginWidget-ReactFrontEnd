@@ -41,15 +41,15 @@ class Login extends Component {
           }
         this.setState({expanded:false, statusMessage:null})
         //console.log(parsedresponse)
-      } else { if (parsedresponse.data) this.setState({statusMessage:parsedresponse.data}); if (parsedresponse.user) this.setState(parsedresponse.user); }
+      } else { if (parsedresponse.data) this.setState({statusMessage:parsedresponse.data}); }
       console.log(`Response status: ${parsedresponse.status}`)
     } catch(err){ alert(`Could not connect to ${this.state.loginserver}\n${err}`) }
   }
   
   toggleSelected=(e)=>{
     let selected = (e.target.name)? e.target.name:ReactDOM.findDOMNode(e.target).parentNode.name
-    if (selected==='login') this.setState({loginExpand:true, registerExpand:false, selected:selected})
-    if (selected==='register') this.setState({loginExpand:false, registerExpand:true, selected:selected})
+    if (selected==='login') this.setState({loginExpand:true, registerExpand:false, selected:selected, statusMessage:null})
+    if (selected==='register') this.setState({loginExpand:false, registerExpand:true, selected:selected, statusMessage:null})
   }
 
   handleClick=(e)=>{
@@ -79,7 +79,7 @@ class Login extends Component {
     if (!newState) newState={};
      super.setState(newState,()=>{
         if (this.lift){ this.lift({user:this.state.user, zip:this.state.zip, city:this.state.city, state:this.state.state, country:this.state.country}) }
-        });
+        }); 
   }
 
   componentDidMount=()=>{this.setState(this.readCookie())}
