@@ -77,7 +77,7 @@ class Login extends Component {
   setState=(newState)=>{
     if (!newState) newState={};
      super.setState(newState,()=>{
-        if (this.lift){ this.lift(this.state) }
+        if (this.lift){ this.lift({user:this.state.user, zip:this.state.zip, city:this.state.city}) }
         });
   }
 
