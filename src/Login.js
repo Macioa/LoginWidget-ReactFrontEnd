@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import Button from '@material-ui/core/Button';
 
@@ -45,8 +46,9 @@ class Login extends Component {
   }
   
   toggleSelected=(e)=>{
-    if (e.target.name==='login') this.setState({loginExpand:true, registerExpand:false, selected:e.target.name})
-    if (e.target.name==='register') this.setState({loginExpand:false, registerExpand:true, selected:e.target.name})
+    let selected = (e.target.name)? e.target.name:ReactDOM.findDOMNode(e.target).parentNode.name
+    if (selected==='login') this.setState({loginExpand:true, registerExpand:false, selected:selected})
+    if (selected=='register') this.setState({loginExpand:false, registerExpand:true, selected:selected})
   }
 
   handleClick=(e)=>{
