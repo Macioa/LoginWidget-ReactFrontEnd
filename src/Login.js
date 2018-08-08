@@ -8,7 +8,7 @@ class Login extends Component {
   constructor(props){
     super(props);
     this.state = { expanded:false, registerExpand:false, loginExpand:true, selected:'login',
-                   username:null, user: null, password:null, city:null, zip:null, 
+                   username:null, user: null, password:null, city:null, state:null, country:null, zip:null, 
                    loginserver: props.server||process.env.REACT_APP_LOGINSERVER||'http://localhost:9000',
                    statusMessage: null
                  };
@@ -40,7 +40,8 @@ class Login extends Component {
             this.setState(user)
           }
         this.setState({expanded:false, statusMessage:null})
-      } else this.setState({statusMessage:parsedresponse.data})
+        //console.log(parsedresponse)
+      } else { if (parsedresponse.data) this.setState({statusMessage:parsedresponse.data}); if (parsedresponse.user) this.setState(parsedresponse.user); }
       console.log(`Response status: ${parsedresponse.status}`)
     } catch(err){ alert(`Could not connect to ${this.state.loginserver}\n${err}`) }
   }
@@ -77,7 +78,7 @@ class Login extends Component {
   setState=(newState)=>{
     if (!newState) newState={};
      super.setState(newState,()=>{
-        if (this.lift){ this.lift({user:this.state.user, zip:this.state.zip, city:this.state.city}) }
+        if (this.lift){ this.lift({user:this.state.user, zip:this.state.zip, city:this.state.city, state:this.state.state, country:this.state.country}) }
         });
   }
 
