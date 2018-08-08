@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 class Login extends Component {
   constructor(props){
     super(props);
-    this.state = { expanded:false, registerExpand:false, loginExpand:false, selected:null,
+    this.state = { expanded:false, registerExpand:false, loginExpand:true, selected:'login',
                    username:null, user: null, password:null, city:null, zip:null, 
                    loginserver: props.server||process.env.LOGINSERVER||'http://localhost:9000',
                    statusMessage: null
@@ -48,7 +48,7 @@ class Login extends Component {
   toggleSelected=(e)=>{
     let selected = (e.target.name)? e.target.name:ReactDOM.findDOMNode(e.target).parentNode.name
     if (selected==='login') this.setState({loginExpand:true, registerExpand:false, selected:selected})
-    if (selected=='register') this.setState({loginExpand:false, registerExpand:true, selected:selected})
+    if (selected==='register') this.setState({loginExpand:false, registerExpand:true, selected:selected})
   }
 
   handleClick=(e)=>{
