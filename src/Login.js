@@ -9,7 +9,7 @@ class Login extends Component {
     super(props);
     this.state = { expanded:false, registerExpand:false, loginExpand:true, selected:'login',
                    username:null, user: null, password:null, city:null, zip:null, 
-                   loginserver: props.server||process.env.LOGINSERVER||'http://localhost:9000',
+                   loginserver: props.server||process.env.REACT_APP_LOGINSERVER||'http://localhost:9000',
                    statusMessage: null
                  };
     this.formRef = React.createRef()
