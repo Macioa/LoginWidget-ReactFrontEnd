@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 class Login extends Component {
   constructor(props){
     super(props);
-    this.state = { expanded:false, 
+    this.state = { expanded:false, registerExpand:false, loginExpand:false, selected:null,
                    username:null, user: null, password:null, city:null, zip:null, 
                    loginserver: props.server||process.env.LOGINSERVER||'http://localhost:9000'
                  };
@@ -25,7 +25,7 @@ class Login extends Component {
     const response = await fetch(`${this.state.loginserver}${path}`, {
       method: 'POST',
       credentials: 'include',
-      body: JSON.stringify({username:this.formRef.current.username.value, password:this.formRef.current.password.value}),
+      body: (this.formRef.current)? JSON.stringify({username:this.formRef.current.username.value, password:this.formRef.current.password.value}) : '',
       headers: { 'content-type':'application/json' }
     })
 
@@ -38,6 +38,16 @@ class Login extends Component {
           this.setState(user)
         }
     } catch(err){ alert(`Could not connect to ${this.state.loginserver}\n${err}`) }
+  }
+  
+  toggleSelected=(e)=>{
+    if (e.target.name==='login') this.setState({loginExpand:true, registerExpand:false, selected:e.target.name})
+    if (e.target.name==='register') this.setState({loginExpand:false, registerExpand:true, selected:e.target.name})
+  }
+
+  handleClick=(e)=>{
+    if (e.target.name==='login') this.login();
+    if (e.target.name==='register') this.register();
   }
 
   register=(e)=>{ if (this.state.username) this.post('/register'); }
@@ -61,27 +71,44 @@ class Login extends Component {
   setState=(newState)=>{
     if (!newState) newState={};
      super.setState(newState,()=>{
-    if (this.lift){ this.lift(this.state) }
-    });
+        if (this.lift){ this.lift(this.state) }
+        });
+    console.log(this.state)
   }
 
   componentDidMount=()=>{this.setState(this.readCookie())}
 
+  createForm=()=>{
+    let inputStyle={width:'70px', borderRadius:'3px'}
+    return (
+      <form style={{margin:'5px'}} ref={this.formRef} name="form">
+              <input type="text" name="username" placeholder="Username" onChange={this.onFormChange} value={this.state.username} style={inputStyle}/>
+              <br/>
+              <input type="password" name="password" placeholder="Password" onChange={this.onFormChange} value={this.state.password} style={inputStyle}/>
+              <br/>
+              <button onClick={this.handleClick} name={this.state.selected} type="button" style={{borderRadius:'5px'}}>Confirm</button>
+      </form>
+    )
+  }
+
   render() {
     return (
-      <div className="Login" style={{borderStyle:'solid', borderRadius:'15px', borderWidth:"1px", width:150, textAlign:'center'}}>
+      <div className="Login" style={{borderStyle:'solid', borderRadius:'15px', borderWidth:"1px", width:100, textAlign:'center'}}>
         <Button onClick={this.toggleExpanded} style={{borderRadius:"15px"}}>{this.state.user?this.state.user:'Login'}</Button>
-        <ExpansionPanel expanded={this.state.expanded} style={{width:"125px", margin:"10px auto 10px", textAlign:'center', borderRadius:'10px'}}>
-            <form style={{margin:'5px'}} onSubmit={this.handleSubmit} ref={this.formRef} name="form">
-              <input type="text" name="username" placeholder="Username" onChange={this.onFormChange} value={this.state.username}/>
+        <ExpansionPanel expanded={this.state.expanded} style={{width:"90px", margin:"10px auto 10px", textAlign:'center', borderRadius:'10px'}}>
+              <Button size='small' onClick={this.toggleSelected} type="button" name="register">Register</Button>
               <br/>
-              <input type="password" name="password" placeholder="Password" onChange={this.onFormChange} value={this.state.password}/>
+              <ExpansionPanel expanded={this.state.registerExpand}>
+                  {(this.state.selected==='register')? this.createForm():''}
+              </ExpansionPanel>
+
+              <Button size='small' onClick={this.toggleSelected} type="button" name="login">Login</Button>
               <br/>
-              <button onClick={this.register} type="button">Register</button>
-              <button onClick={this.login} type="button">Login</button>
-              <br/>
-              <button onClick={this.guest} type="button">Guest</button>
-            </form>
+              <ExpansionPanel expanded={this.state.loginExpand}>
+                  {(this.state.selected==='login')? this.createForm():''}
+              </ExpansionPanel>
+
+              <Button size='small' onClick={this.guest} type="button">Guest</Button>
         </ExpansionPanel>
       </div>
     );
