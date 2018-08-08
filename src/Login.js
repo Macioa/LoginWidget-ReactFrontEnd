@@ -8,7 +8,8 @@ class Login extends Component {
     super(props);
     this.state = { expanded:false, registerExpand:false, loginExpand:false, selected:null,
                    username:null, user: null, password:null, city:null, zip:null, 
-                   loginserver: props.server||process.env.LOGINSERVER||'http://localhost:9000'
+                   loginserver: props.server||process.env.LOGINSERVER||'http://localhost:9000',
+                   statusMessage: null
                  };
     this.formRef = React.createRef()
   }
@@ -32,11 +33,14 @@ class Login extends Component {
     try {
       const parsedresponse = await response.json();
 
-      if ((parsedresponse.status==200)||(parsedresponse.status==201))
-        if (parsedresponse.user){
-          let user = parsedresponse.user; user.user = user.username;
-          this.setState(user)
-        }
+      if ((parsedresponse.status==200)||(parsedresponse.status==201)){
+          if (parsedresponse.user){
+            let user = parsedresponse.user; user.user = user.username;
+            this.setState(user)
+          }
+        this.setState({expanded:false, statusMessage:null})
+      } else this.setState({statusMessage:parsedresponse.data})
+      console.log(`Response status: ${parsedresponse.status}`)
     } catch(err){ alert(`Could not connect to ${this.state.loginserver}\n${err}`) }
   }
   
@@ -73,7 +77,6 @@ class Login extends Component {
      super.setState(newState,()=>{
         if (this.lift){ this.lift(this.state) }
         });
-    console.log(this.state)
   }
 
   componentDidMount=()=>{this.setState(this.readCookie())}
@@ -87,6 +90,9 @@ class Login extends Component {
               <input type="password" name="password" placeholder="Password" onChange={this.onFormChange} value={this.state.password} style={inputStyle}/>
               <br/>
               <button onClick={this.handleClick} name={this.state.selected} type="button" style={{borderRadius:'5px'}}>Confirm</button>
+              {(this.state.statusMessage)?
+                  <div><br/><h5 style={{color:'#960009'}}>{this.state.statusMessage}</h5></div> : ''
+              }
       </form>
     )
   }
