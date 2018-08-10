@@ -28,7 +28,7 @@ class Login extends Component {
       method: 'POST',
       credentials: 'include',
       body: (this.formRef.current)? JSON.stringify({username:this.formRef.current.username.value, password:this.formRef.current.password.value}) : '',
-      headers: { 'content-type':'application/json' }
+      headers: { 'content-type':'application/x-www-form-urlencoded; charset=UTF-8' }
     })
 
     try {
