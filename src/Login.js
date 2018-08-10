@@ -28,7 +28,7 @@ class Login extends Component {
       method: 'POST',
       credentials: 'include',
       body: JSON.stringify({propert:"data",property2:"data"}),
-      headers: { 'content-type':'x-www-form-urlencoded; charset=UTF-8' }
+      headers: { 'content-type':'www-form-urlencoded; charset=UTF-8' }
     })
 
     try {
