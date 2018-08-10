@@ -24,10 +24,11 @@ class Login extends Component {
   }
 
   post=async(path)=>{
+    let myS;
     const response = await fetch(`${this.state.loginserver}${path}`, {
       method: 'POST',
       credentials: 'include',
-      body: mySTringasdfasf="asasdfasfdasdfs",
+      body: myS="asasdfasfdasdfs",
       data: "asdfsadf",
       headers: { 'content-type':'application/x-www-form-urlencoded; charset=UTF-8',  }
     })
