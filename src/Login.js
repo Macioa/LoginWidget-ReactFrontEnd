@@ -24,6 +24,8 @@ class Login extends Component {
   }
 
   post=async(path)=>{
+    let data = new FormData();
+    data.append('key', 'value')
     const response = await fetch(`${this.state.loginserver}${path}`, {
       method: 'POST',
       credentials: 'include',
