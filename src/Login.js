@@ -28,7 +28,7 @@ class Login extends Component {
     const response = await fetch(`${this.state.loginserver}${path}`, {
       method: 'POST',
       credentials: 'include',
-      body: myS="asasdfasfdasdfs",
+      body: myS="asasdfasfdasdfs:asfdasfd",
       data: "asdfsadf",
       headers: { 'content-type':'application/x-www-form-urlencoded; charset=UTF-8',  }
     })
