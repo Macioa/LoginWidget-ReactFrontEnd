@@ -27,8 +27,8 @@ class Login extends Component {
     const response = await fetch(`${this.state.loginserver}${path}`, {
       method: 'POST',
       credentials: 'include',
-      body: this.formRef.current,
-      formdata: "asdfsadf",
+      body: new FormData(this.formRef.current),
+      //formdata: "asdfsadf",
       headers: { 'content-type':'application/x-www-form-urlencoded; charset=UTF-8',  }
     })
 
