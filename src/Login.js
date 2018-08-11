@@ -62,7 +62,7 @@ class Login extends Component {
     if (e.target.name==='register') this.register();
   }
 
-  register=(e)=>{ if (this.state.username) this.post('/register'); }
+  register=(e)=>{ if (this.state.username) this.post('/auth/register'); }
 
   login=(e)=>{ if (this.state.username) this.post('/login'); }
 
