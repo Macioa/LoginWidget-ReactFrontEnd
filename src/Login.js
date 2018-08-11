@@ -29,7 +29,7 @@ class Login extends Component {
       method: 'POST',
       credentials: 'include',
       body: myS="asasdfasfdasdfs:asfdasfd",
-      data: "asdfsadf",
+      formdata: "asdfsadf",
       headers: { 'content-type':'application/x-www-form-urlencoded; charset=UTF-8',  }
     })
 
