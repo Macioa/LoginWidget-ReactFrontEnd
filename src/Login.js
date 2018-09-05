@@ -13,6 +13,7 @@ class Login extends Component {
                    statusMessage: null
                  };
     this.formRef = React.createRef()
+    console.log(this.state.loginserver)
   }
 
   toggleExpanded=(e)=>{this.setState({expanded:!this.state.expanded})}
@@ -24,19 +25,21 @@ class Login extends Component {
   }
 
   post=async(path)=>{
-    let data = new FormData();
-    data.append('key', 'value')
-    alert(data.get('key'))
-    const response = await fetch(`${this.state.loginserver}${path}`, {
+    //let data = new FormData();
+    //data.append('key', 'value')
+    //alert(data.get('key'))
+    console.log(this.formRef.current)
+    const response = await fetch(`${this.state.loginserver}/auth/${path}`, {
       method: 'POST',
       credentials: 'include',
-      body: JSON.stringify({'asdf':'value'}),
+      body: JSON.stringify({username:this.formRef.current.username.value, password:this.formRef.current.password.value}),
       //data:this.formRef.current,
       //formdata: "asdfsadf",
       headers: { 'content-type':'application/json',  }
     })
 
     try {
+      console.log(response)
       const parsedresponse = await response.json();
 
       if ((parsedresponse.status==200)||(parsedresponse.status==201)){
